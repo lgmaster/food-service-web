@@ -32,7 +32,7 @@ export function LoginForm({ registered, sessionExpired }: LoginFormProps) {
       );
 
       if (res.ok) {
-        router.push('/backoffice');
+        window.location.href = '/backoffice';
         return;
       }
 

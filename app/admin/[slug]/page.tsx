@@ -28,6 +28,8 @@ async function getEstablishment(slug: string): Promise<EstablishmentPublicData |
 
 export default async function AdminLoginPage(props: PageProps<'/admin/[slug]'>) {
   const { slug } = await props.params;
+  const searchParams = await (props.searchParams as Promise<Record<string, string>>);
+  const registered = searchParams?.registered === '1';
   const establishment = await getEstablishment(slug);
 
   if (establishment === null) {
@@ -78,6 +80,11 @@ export default async function AdminLoginPage(props: PageProps<'/admin/[slug]'>) 
             <p className="text-sm text-gray-500 mt-1">Painel do Estabelecimento</p>
           </div>
 
+          {registered && (
+            <div className="mb-4 text-sm text-green-700 bg-green-50 border border-green-100 rounded-xl px-4 py-3">
+              Conta criada com sucesso. Faça login para continuar.
+            </div>
+          )}
           <LoginForm slug={slug} />
         </div>
 

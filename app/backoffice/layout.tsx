@@ -1,4 +1,6 @@
 import { cookies } from 'next/headers';
+import { TopNav } from './_components/top-nav';
+import { Sidebar } from './_components/sidebar';
 
 function decodeJwtPayload(token: string): { name?: string } | null {
   try {
@@ -11,16 +13,27 @@ function decodeJwtPayload(token: string): { name?: string } | null {
   }
 }
 
-export default async function BackofficePage() {
+export default async function BackofficeLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const cookieStore = await cookies();
   const token = cookieStore.get('bo_token')?.value ?? '';
   const payload = decodeJwtPayload(token);
   const adminName = payload?.name ?? 'Administrador';
 
+  if (!payload) {
+    return <>{children}</>;
+  }
+
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-semibold text-gray-900 font-heading">Olá, {adminName}!</h1>
-      <p className="text-sm text-gray-500 mt-1">Bem-vindo ao painel administrativo FoodDash.</p>
+    <div className="flex h-screen overflow-hidden bg-gray-50">
+      <Sidebar />
+      <div className="flex flex-col flex-1 overflow-hidden">
+        <TopNav adminName={adminName} />
+        <main className="flex-1 overflow-y-auto">{children}</main>
+      </div>
     </div>
   );
 }
